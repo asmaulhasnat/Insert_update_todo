@@ -1,0 +1,7 @@
+delimiter //
+CREATE PROCEDURE `Insert_update_todo`(IN `uid` INT UNSIGNED, IN `nt` TEXT) NOT DETERMINISTIC NO SQL SQL SECURITY DEFINER IF (SELECT COUNT(*) FROM todo)>=3 THEN
+   UPDATE todo SET note=nt, updated_at=now() WHERE id=(SELECT * FROM (SELECT id FROM todo WHERE user_id=uid ORDER BY updated_at DESC LIMIT 1) t);
+ELSE
+   INSERT INTO todo(id, user_id, note, created_at, updated_at) VALUES(null, uid, nt, now(), now());
+END IF
+//
